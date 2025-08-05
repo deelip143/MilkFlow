@@ -1,0 +1,76 @@
+<div class="p-4 bg-gray-50 min-h-screen">
+    <button (click)="navigate('dashboard')" class="mb-4 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg transition duration-200 flex items-center gap-2 hover:bg-gray-300">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+        Back to Dashboard
+    </button>
+
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Reports</h1>
+
+    <div class="bg-white p-6 rounded-xl shadow-md mb-6 flex flex-col md:flex-row gap-4">
+        <div>
+            <label htmlFor="start-date" class="block text-gray-700 text-sm font-medium mb-2">Start Date</label>
+            <input
+                type="date"
+                id="start-date"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600"
+                [(ngModel)]="startDate"
+                (ngModelChange)="generateReport()"
+            />
+        </div>
+        <div>
+            <label htmlFor="end-date" class="block text-gray-700 text-sm font-medium mb-2">End Date</label>
+            <input
+                type="date"
+                id="end-date"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600"
+                [(ngModel)]="endDate"
+                (ngModelChange)="generateReport()"
+            />
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Summary Metrics</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 rounded-lg bg-blue-50">
+                <p class="text-gray-600">Total Liters Delivered:</p>
+                <p class="text-2xl font-bold text-blue-600">{{ report.totalLiters }} L</p>
+            </div>
+            <div class="p-4 rounded-lg bg-green-50">
+                <p class="text-gray-600">Revenue Generated:</p>
+                <p class="text-2xl font-bold text-green-600">₹{{ report.totalRevenue }}</p>
+            </div>
+        </div>
+
+        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Milk Type Breakdown</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div *ngFor="let entry of milkTypeBreakdownEntries" class="p-4 rounded-lg bg-purple-50">
+                <p class="text-gray-600">{{ entry.type }} Milk:</p>
+                <p class="text-lg font-bold text-purple-600">{{ entry.liters }} L</p>
+            </div>
+        </div>
+
+        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Top 5 Customers (by Liters)</h3>
+        <ng-container *ngIf="report.topCustomers.length > 0; else noCustomerData">
+            <ul class="list-disc list-inside bg-gray-100 p-4 rounded-lg">
+                <li *ngFor="let cust of report.topCustomers; let i = index" class="py-1 text-gray-800">
+                    <span class="font-medium">{{ cust.name }}:</span> {{ cust.liters }} L
+                </li>
+            </ul>
+        </ng-container>
+        <ng-template #noCustomerData>
+            <p class="text-center text-gray-500">No customer data for this period.</p>
+        </ng-template>
+    </div>
+
+    <div class="flex gap-4 justify-end flex-wrap">
+        <button (click)="handleExport('Excel')" class="bg-gray-700 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-800 transition duration-200 flex items-center gap-2 font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Export to Excel
+        </button>
+        <button (click)="handleExport('PDF')" class="bg-red-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-700 transition duration-200 flex items-center gap-2 font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export to PDF
+        </button>
+    </div>
+</div>
